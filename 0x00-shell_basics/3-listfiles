@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -a -l 3-listfiles
+ls -l 3-listfiles
