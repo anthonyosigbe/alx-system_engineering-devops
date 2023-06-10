@@ -1,4 +1,5 @@
-<h3>Requirements</h3><br>
+<h1>0x02. Shell, I/O Redirections and filter</h1>
+<h3>Requirements</h3>
 <h3>General</h3>
 <ul>
 <li>Allowed editors: vi, vim, emacs</li>
