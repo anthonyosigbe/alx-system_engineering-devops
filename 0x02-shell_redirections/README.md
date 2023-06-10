@@ -1,5 +1,3 @@
-<h1>0x02. Shell, I/O Redirections and filters Tasks</h1>
-
 <h3>Requirements</h3><br>
 <h3>General</h3>
 <ul>
@@ -16,7 +14,7 @@
 <h1> Tasks </h1>
 
 0. Hello World - prints “Hello, World”, followed by a new line to the standard output.<br>
-1. Confused smiley - displays a confused smiley "(Ôo)'.<br>
+1. Confused smiley - displays a confused smiley " "(Ôo)'.<br>
 2. Let's display a file - Display the content of the /etc/passwd file.<br>
 3. What about 2? - Display the content of /etc/passwd and /etc/hosts.<br>
 4. Last lines of a file - Display the last 10 lines of /etc/passwd<br>
