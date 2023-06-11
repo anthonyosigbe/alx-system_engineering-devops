@@ -1,2 +1,2 @@
 #!/bin/bash
-tr --delete c C
+tr --delete 'cC'
