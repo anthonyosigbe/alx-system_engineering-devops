@@ -1,2 +1,2 @@
 #!/bin/bash
-cut ':' --delimiter --fields l,6 /etc/passwd
+cut --delimiter ':'  --fields l,6 /etc/passwd
