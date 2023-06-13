@@ -1,2 +1,2 @@
-#!bin/bash
-tr 'A-Za-z' 'N-ZA-Mn-za-m'
+#!/bin/bash
+echo "$(tr '[:upper:]' '[:lower:]' <<<"$1" | tr '[a-z]' '[n-za-m]' | tr '[:upper:]' '[:lower:]')"
