@@ -1,2 +1,2 @@
 #!/bin/bash/
-echo $((10#16)) $DECIMAL
+prinf '%x\n' $DECIMAL
