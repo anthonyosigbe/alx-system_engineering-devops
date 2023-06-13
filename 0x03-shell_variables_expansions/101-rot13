@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "$1" | tr '[:upper]' '[:lower:]'
+echo "$(tr '[:alpha:]' '[:lower:]' <<<"$1" | tr '[a-z]' '[n-za-m]' | tr '[:alpha:]' '[:lower:]')"
+
