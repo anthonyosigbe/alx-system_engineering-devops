@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gives me information about the holbertonschool file
+# Gives me information about the school file
 file_path="school"
 
 if [ -e "$file_path" ]; then
