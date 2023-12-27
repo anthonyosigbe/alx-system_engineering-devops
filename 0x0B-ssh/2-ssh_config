@@ -1,9 +1,0 @@
-# File for configuring custom client settings
-
-Host *
-    SendEnv LANG LC_*
-    HashKnownHosts yes
-    GSSAPIAuthentication yes
-    GSSAPIDelegateCredentials no
-    IdentityFile ~/.ssh/school
-    PasswordAuthentication no
