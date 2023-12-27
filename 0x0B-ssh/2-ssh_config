@@ -1,8 +1,9 @@
-#!/usr/bin/env bash
 # File for configuring custom client settings
-# ~/.ssh/config
 
-Host 34.207.156.36
-	User ubuntu
-	IdentityFile ~/.ssh/school
-	PasswordAuthentication no
+Host *
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
