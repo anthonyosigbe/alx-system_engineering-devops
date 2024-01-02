@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Install a nginx web server listening on port 80.
+# When sending a GET request to the root of the
+# Nginx server (/) it returns a page containing
+# the text 'Hello World!'.
+
+# Sets up an Nginx server directive to redirect
+# To another page with a 301 HTTP status code.
+#
+# Sets up a custom 404 page with the content
+# 'Ceci n'est pas une page' on the Nginx server.
+
+apt-get update
+apt-get install -y nginx
+
+mkdir /etc/nginx/html
+touch /etc/nginx/html/index.html
+echo "Hello World!" > /etc/nginx/html/index.html
+touch /etc/nginx/html/404.html
+echo "Ceci n'est pas une page" > /etc/nginx/html/404.html
+
+printf %s "server {
+    listen 80;
+    listen [::]:80 default_server;
+    root   /etc/nginx/html;
+    index  index.html index.htm;
+
+    location /redirect_me {
+        return 301 https://get.tech/;
+    }
+
+    error_page 404 /404.html;
+    location /404 {
+      root /etc/nginx/html;
+      internal;
+    }
+}" > /etc/nginx/sites-available/default
+
+service nginx restart
