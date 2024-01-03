@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
 # Start Apache within the Docker container named
 # holbertonschool/265-0.
-
-echo "ServerName localhost" >> /etc/apache2.conf
 service apache2 start
