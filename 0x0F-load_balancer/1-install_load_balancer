@@ -3,42 +3,21 @@
 # Allows management of HAproxy via the init script.
 # Balances requests using a round-robin algorithm.
 
-apt-get install -y software-properties-common
-add-apt-repository -y ppa:vbernat/haproxy-2.9
-apt-get update
-apt-get install -y haproxy=2.9.\*
+# Install HAproxy on a server
+apt-get -y update
+apt-get -y install haproxy=2.8.\*
 
-echo "ENABLED=1" >> /etc/default/haproxy
-mv /etc/haproxy/haproxy.cfg{,.original}
-touch /etc/haproxy/haproxy.cfg
+# Configure haproxy configuration file to distribute requests using a roundrobin algorithm
+echo '
+frontend thronehub.tech
+        bind 0:80
+        default_backend web_servers
 
-printf %s "global
-    log 127.0.0.1 local0 notice
-    maxconn 2000
-    user haproxy
-    group haproxy
+backend web_servers
+        balance roundrobin
+        server 425854-web-01 34.229.68.30:80
+        server 425854-web-02 54.158.220.29:80
+' >> /etc/haproxy/haproxy.cfg
 
-defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
-    retries 3
-    option redispatch
-    timeout connect  5000
-    timeout client  10000
-    timeout server  10000
-
-listen thronehub.tech
-    bind 0.0.0.0:80
-    mode http
-    stats enable
-    stats uri /haproxy?stats
-    balance roundrobin
-    option httpclose
-    option forwardfor
-    server 425854-web-01 34.229.68.30:80 check
-    server 425854-web-02 54.158.220.29:80 check
-" >> /etc/haproxy/haproxy.cfg
-
-service haproxy start
+# Restart HAproxy service
+sudo service haproxy restart
