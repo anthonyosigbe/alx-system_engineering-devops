@@ -29,7 +29,7 @@ defaults
     timeout client  10000
     timeout server  10000
 
-listen hbnb
+listen thronehub.tech
     bind 0.0.0.0:80
     mode http
     stats enable
