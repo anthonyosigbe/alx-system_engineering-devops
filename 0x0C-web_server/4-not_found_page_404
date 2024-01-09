@@ -10,30 +10,23 @@
 # Sets up a custom 404 page with the content
 # 'Ceci n'est pas une page' on the Nginx server.
 
-apt-get update
-apt-get install -y nginx
+sudo apt-get update
+sudo apt-get install -y nginx
 
-mkdir /etc/nginx/html
-touch /etc/nginx/html/index.html
-echo "Hello World!" > /etc/nginx/html/index.html
-touch /etc/nginx/html/404.html
-echo "Ceci n'est pas une page" > /etc/nginx/html/404.html
+# Creating an index.html page
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-printf %s "server {
-    listen 80;
-    listen [::]:80 default_server;
-    root   /etc/nginx/html;
-    index  index.html index.htm;
+# Performing a "moved permanently redirection" (301)
+new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/anthonyosigbe permanent;"
+sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
 
-    location /redirect_me {
-        return 301 https://get.tech/;
-    }
+# Creating a 404 Custom error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+new_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
 
-    error_page 404 /404.html;
-    location /404 {
-      root /etc/nginx/html;
-      internal;
-    }
-}" > /etc/nginx/sites-available/default
+sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/default
 
-service nginx restart
+# Testing configurations for syntax errors
+sudo nginx -t
+
+sudo service nginx restart

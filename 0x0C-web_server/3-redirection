@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
-# Sets up an Nginx server to redirect /redirect_me to a different page.
-# Configures a "301 Moved Permanently" redirection
-# for /redirect_me on the Nginx server.
+# Install a nginx web server listening on port 80.
+# When making a GET request to nginx at its root /
+#  it returns a page containing the string
+# 'Hello World!'
 
-apt-get update
-apt-get install -y nginx
-echo "Hello World!" > /etc/nginx/html/index.html
-echo "server {
-    listen 80;
-    listen [::]:80 default_server;
-    root   /etc/nginx/html;
-    index  index.html;
-    location /redirect_me {
-        return 301 https://get.tech/;
-    }
-}" > /etc/nginx/sites-available/default
-service nginx restart
+# Upadating Packages before Installations
+sudo apt-get update
+sudo apt-get install -y nginx
+
+# Creating an index.html page
+echo "Hello World!" | sudo tee /var/www/html/index.html
+
+# Performing a 301 Redirection
+string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/anthonyosigbe permanent;"
+sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
+
+# Restarting Nginx service
+sudo service nginx restart
