@@ -10,6 +10,7 @@
 # Sets up a custom 404 page with the content
 # 'Ceci n'est pas une page' on the Nginx server.
 
+
 sudo apt-get update
 sudo apt-get install -y nginx
 
@@ -26,7 +27,11 @@ new_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation 
 
 sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/default
 
+# Creating an HTTP response header
+sudo sed -i "/server_name _/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
+
 # Testing configurations for syntax errors
 sudo nginx -t
 
+# Restart nginx after implementing changes
 sudo service nginx restart
