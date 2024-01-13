@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
-# Install a nginx web server listening on port 80.
-# When sending a GET request to the root of the
-# Nginx server (/) it returns a page containing
-# the text 'Hello World!'.
+# Customizing a 404-error_page
 
-# Sets up an Nginx server directive to redirect
-# To another page with a 301 HTTP status code.
-#
-# Sets up a custom 404 page with the content
-# 'Ceci n'est pas une page' on the Nginx server.
-
+# Updating Packages before performing installations
 sudo apt-get update
 sudo apt-get install -y nginx
 
@@ -29,4 +21,5 @@ sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/
 # Testing configurations for syntax errors
 sudo nginx -t
 
+# restart nginx after implementing changes
 sudo service nginx restart
