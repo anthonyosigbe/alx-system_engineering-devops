@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-# Install a nginx web server listening on port 80.
-# When making a GET request to nginx at its root /
-#  it returns a page containing the string
-# 'Hello World!'
+#  A Script that configures a new Ubuntu machine to Perform a 301-redirection
 
 # Upadating Packages before Installations
 sudo apt-get update
