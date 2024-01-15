@@ -16,7 +16,7 @@ frontend  thronehub_frontend
         default_backend thronehub_backend
 backend thronehub_backend
         balance roundrobin
-        server 425854-web-01 34.229.68.30:80 check
+        server 425854-web-01 54.224.37.65:80 check
         server 425854-web-02 100.25.3.119:80 check
 "
 echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
