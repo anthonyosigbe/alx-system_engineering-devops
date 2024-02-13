@@ -1,32 +1,21 @@
 #!/usr/bin/python3
-"""
-Module to fetch and print the titles of the top
-10 hot posts of a given subreddit.
-"""
+"""Function to display the current hot posts of a specified subreddit on Reddit."""
 import requests
 
 
 def top_ten(subreddit):
-    """
-    Print the titles of the first 10 hot posts listed for a given subreddit.
-    """
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
-    headers = {"User-Agent": "python:reddit_api:v1.0.0 (by /u/anthonyosigbe)"}
-    params = {"limit": 10}
-    res = requests.get(url, headers=headers, params=params,
-            allow_redirects=False)
-
-    if res.status_code == 200:
-        data = res.json().get("data", {}).get("children", [])
-        for post in data:
-            print(post.get("data", {}).get("title"))
-    else:
+    """Display the titles of the top 10 trending posts in a specified subreddit."""
+    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
+    headers = {
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
+    }
+    params = {
+        "limit": 10
+    }
+    response = requests.get(url, headers=headers, params=params,
+                            allow_redirects=False)
+    if response.status_code == 404:
         print("None")
-
-
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 2:
-        print("Please pass an argument for the subreddit to search.")
-    else:
-        top_ten(sys.argv[1])
+        return
+    results = response.json().get("data")
+    [print(c.get("data").get("title")) for c in results.get("children")]
