@@ -1,9 +1,14 @@
 <h1>Postmortem</h1>
 <h2>DevOps SysAdmin</h2>
 
+![postmortem](https://github.com/anthonyosigbe/alx-system_engineering-devops/assets/45193993/0dd31a53-d4e0-4407-a305-4dd55dc1e738)
+
 # Incident Report Guide: Crafting a Postmortem
 
 This guide outlines the process of creating an Incident Report, commonly known as a Postmortem, following practices similar to those used by Google engineers. A comprehensive Postmortem consists of five key sections: Issue Summary, Timeline, Root Cause, Resolution and Recovery, and Corrective and Preventive Measures. Below, we delve into each section to understand its significance and content.
+
+
+![post-mortem](https://github.com/anthonyosigbe/alx-system_engineering-devops/assets/45193993/8545e2da-7c8a-4bc6-9ac9-7f7824d50015)
 
 ## Issue Summary
 
