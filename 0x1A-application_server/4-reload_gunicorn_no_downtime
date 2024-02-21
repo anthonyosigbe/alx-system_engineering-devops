@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Gracefully reloads Gunicorn using the HUP signal.
+
+pkill -HUP gunicorn
