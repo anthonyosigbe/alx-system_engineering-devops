@@ -1,0 +1,6 @@
+---
+install_method:
+  tool: install_script
+  tool_version: install_script_agent7
+  installer_version: install_script-1.26.0
+

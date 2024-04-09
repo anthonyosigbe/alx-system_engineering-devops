@@ -1,0 +1,104 @@
+## All options defined here are available to all instances.
+#
+init_config:
+
+    ## @param service - string - optional
+    ## Attach the tag `service:<SERVICE>` to every metric, event, and service check emitted by this integration.
+    ##
+    ## Additionally, this sets the default `service` for every log source.
+    #
+    # service: <SERVICE>
+
+## Every instance is scheduled independently of the others.
+#
+instances:
+
+    ## @param nagios_conf - string - required
+    ## Define the path to your Nagios configuration file.
+    ## The Agent reads the main Nagios configuration file to get the locations of the Nagios log files it should watch.
+    ## The integration also works with Icinga v1. If you use Icinga v1, set `nagios_conf` to the location of your Icinga
+    ## configuration file.
+    #
+  - nagios_conf: /etc/nagios3/nagios.cfg
+
+    ## @param collect_events - boolean - optional - default: true
+    ## Set collect_events to false to disable Nagios Event collection.
+    #
+    # collect_events: true
+
+    ## @param passive_checks_events - boolean - optional - default: false
+    ## Set passive_checks_events to collect Nagios checks events.
+    #
+    # passive_checks_events: false
+
+    ## @param collect_host_performance_data - boolean - optional - default: false
+    ## With the default configuration, the Nagios check doesn't collect any metrics.
+    ## Set `collect_host_performance_data` to `true` to collect Nagios host performance data.
+    #
+    # collect_host_performance_data: false
+
+    ## @param collect_service_performance_data - boolean - optional - default: false
+    ## With the default configuration, the Nagios check doesn't collect any metrics.
+    ## Set `collect_service_performance_data` to `true` to collect Nagios service performance data.
+    #
+    # collect_service_performance_data: false
+
+    ## @param tags - list of strings - optional
+    ## A list of tags to attach to every metric and service check emitted by this instance.
+    ##
+    ## Learn more about tagging at https://docs.datadoghq.com/tagging
+    #
+    # tags:
+    #   - <KEY_1>:<VALUE_1>
+    #   - <KEY_2>:<VALUE_2>
+
+    ## @param service - string - optional
+    ## Attach the tag `service:<SERVICE>` to every metric, event, and service check emitted by this integration.
+    ##
+    ## Overrides any `service` defined in the `init_config` section.
+    #
+    # service: <SERVICE>
+
+    ## @param min_collection_interval - number - optional - default: 15
+    ## This changes the collection interval of the check. For more information, see:
+    ## https://docs.datadoghq.com/developers/write_agent_check/#collection-interval
+    #
+    # min_collection_interval: 15
+
+    ## @param empty_default_hostname - boolean - optional - default: false
+    ## This forces the check to send metrics with no hostname.
+    ##
+    ## This is useful for cluster-level checks.
+    #
+    # empty_default_hostname: false
+
+    ## @param metric_patterns - mapping - optional
+    ## A mapping of metrics to include or exclude, with each entry being a regular expression.
+    ##
+    ## Metrics defined in `exclude` will take precedence in case of overlap.
+    #
+    # metric_patterns:
+    #   include:
+    #   - <INCLUDE_REGEX>
+    #   exclude:
+    #   - <EXCLUDE_REGEX>
+
+## Log Section
+##
+## type - required - Type of log input source (tcp / udp / file / windows_event).
+## port / path / channel_path - required - Set port if type is tcp or udp.
+##                                         Set path if type is file.
+##                                         Set channel_path if type is windows_event.
+## source  - required - Attribute that defines which integration sent the logs.
+## encoding - optional - For file specifies the file encoding. Default is utf-8. Other
+##                       possible values are utf-16-le and utf-16-be.
+## service - optional - The name of the service that generates the log.
+##                      Overrides any `service` defined in the `init_config` section.
+## tags - optional - Add tags to the collected logs.
+##
+## Discover Datadog log collection: https://docs.datadoghq.com/logs/log_collection/
+#
+# logs:
+#   - type: file
+#     path: /opt/nagios/var/log/nagios.log
+#     source: nagios

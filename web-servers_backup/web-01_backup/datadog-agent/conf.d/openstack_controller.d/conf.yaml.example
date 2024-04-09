@@ -1,0 +1,415 @@
+## All options defined here are available to all instances.
+#
+init_config:
+
+    ## @param proxy - mapping - optional
+    ## Set HTTP or HTTPS proxies for all instances. Use the `no_proxy` list
+    ## to specify hosts that must bypass proxies.
+    ##
+    ## The SOCKS protocol is also supported like so:
+    ##
+    ##   socks5://user:pass@host:port
+    ##
+    ## Using the scheme `socks5` causes the DNS resolution to happen on the
+    ## client, rather than on the proxy server. This is in line with `curl`,
+    ## which uses the scheme to decide whether to do the DNS resolution on
+    ## the client or proxy. If you want to resolve the domains on the proxy
+    ## server, use `socks5h` as the scheme.
+    #
+    # proxy:
+    #   http: http://<PROXY_SERVER_FOR_HTTP>:<PORT>
+    #   https: https://<PROXY_SERVER_FOR_HTTPS>:<PORT>
+    #   no_proxy:
+    #   - <HOSTNAME_1>
+    #   - <HOSTNAME_2>
+
+    ## @param skip_proxy - boolean - optional - default: false
+    ## If set to `true`, this makes the check bypass any proxy
+    ## settings enabled and attempt to reach services directly.
+    #
+    # skip_proxy: false
+
+## Every instance is scheduled independently of the others.
+#
+instances:
+
+  -
+    ## @param use_legacy_check_version - boolean - optional - default: false
+    ## For backward compatibility reasons, it is possible to use a deprecated version of the Openstack Controller
+    ## integration by setting this field to "true".
+    #
+    # use_legacy_check_version: false
+
+    ## @param username - string - optional
+    ## The User name used to connect to Openstack.
+    #
+    # username: admin
+
+    ## @param password - string - optional
+    ## The Password used to connect to Openstack.
+    #
+    # password: <PASSWORD>
+
+    ## @param domain_id - string - optional - default: default
+    ## The domain ID used to connect to Openstack. If not specified, the check will
+    ## use the "default" Domain ID
+    #
+    # domain_id: default
+
+    ## @param use_agent_proxy - boolean - optional - default: true
+    ## Whether the dd-agent proxy should also be used for openstack API requests (if set).
+    #
+    # use_agent_proxy: true
+
+    ## @param paginated_limit - integer - optional - default: 1000
+    ## paginated_limit sets the number of items some api calls should return.
+    #
+    # paginated_limit: 1000
+
+    ## @param openstack_config_file_path - string - optional
+    ## Absolute path of the configuration file for the connection to openstack with openstacksdk.
+    #
+    # openstack_config_file_path: <PATH_TO_YAML_FILE>
+
+    ## @param openstack_cloud_name - string - optional
+    ## Name of the cloud configuration to use.
+    ## If this parameter is specified, the connection to Openstack only uses the configuration file specified in
+    ## openstack_config_file_path, or at the default location:
+    ## ~/.config/openstack or /etc/openstack
+    #
+    # openstack_cloud_name: <CLOUD_NAME>
+
+    ## @param keystone_server_url - string - optional
+    ## URL of your identity server. NOTE: The server must support Identity API v3.
+    ## This parameter is required if openstack_config_file_path or openstack_cloud_name are not specified.
+    #
+    # keystone_server_url: https://<KEYSTONE_ENDPOINT>:<PORT>/
+
+    ## @param ironic_microversion - string - optional
+    ## The microversion of the Ironic (Bare Metal) API to call.
+    ## It is recommended to set this parameter to the latest Ironic microversion supported by your Openstack version.
+    ##
+    ## View this page for more about Ironic microvoersion compatibility:
+    ##    https://docs.openstack.org/ironic/latest/contributor/webapi-version-history.html
+    #
+    ironic_microversion: '1.80'
+
+    ## @param nova_microversion - string - optional
+    ## The microversion of the Nova (Compute) API to call.
+    ## It is recommended to set this parameter to the latest Compute microversion supported by your Openstack version.
+    ## View this page for more about Compute microvoersion compatibility:
+    ##    https://docs.openstack.org/nova/latest/reference/api-microversion-history.html
+    ## View this page for more information about microversions in Openstack:
+    ##    https://docs.openstack.org/api-guide/compute/microversions.html
+    #
+    nova_microversion: '2.93'
+
+    ## @param use_shortname - boolean - optional - default: false
+    ## In some OpenStack environments, the hostname registered to Nova is the shortname.
+    ## Enabling this enforces the check to split the hostname up to the first period when
+    ## comparing against nova responses. Only affects aggregate tagging.
+    #
+    # use_shortname: false
+
+    ## @param endpoint_interface - string - optional - default: public
+    ## Indicates the visibility scope of the component's endpoints to use. The possible values are:
+    ##   public: This endpoint is accessible from outside the cloud and typically denotes a public-facing URL or 
+    ##       IP address.
+    ##   internal: This endpoint is typically used for communication between services within the cloud 
+    ##       infrastructure itself.
+    ##       It may be an internal IP or hostname that's not accessible from outside the cloud.  
+    ##   admin: This endpoint is specifically for administrative tasks and may have extended privileges or 
+    ##       functionality compared to the public and internal endpoints.
+    ##       It's meant for cloud operators or administrators.
+    #
+    # endpoint_interface: internal
+
+    ## @param endpoint_region_id - string - optional
+    ## The region_id that will be used to filter the endpoints to use for each component.
+    #
+    # endpoint_region_id: <ENDPOINT_REGION_ID>
+
+    ## @param components - mapping - optional
+    ## General configuration that we want to apply to each of the components and their different metric blocks.
+    #
+    # components:
+    #   compute: false
+
+    ## @param projects - mapping - optional
+    ## Optional configuration to indicate the projects that we want to be processed. If not configured,
+    ## all projects will be processed.
+    ##
+    ## The 'include' key will indicate the regular expressions of the projects for which metrics are to be reported
+    ## and the configuration to be applied to each of them. Each group may have a 'components'-like configuration,
+    ## enabling or disabling components or metrics. For further details see previous section 'components'.
+    ## If no configuration associated with the key is indicated
+    ## with the regular expression, they will be processed with the default configuration.
+    ##
+    ## The projects will be processed in the order indicated in the 'include'.
+    ## If a projects is matched on an 'include' key, it will only be processed there and not in a later 'include'
+    ## that it might match on.
+    ##
+    ## The 'exclude' key will indicate the regular expressions of those projects for which metrics
+    ## are not to be reported.
+    ## The excludes will have priority over the includes, that is, if a projects matches an exclude, it will not be
+    ## processed even if it matches an include.
+    ##
+    ## The 'limit' key will allow limiting the number of projects processed to avoid a combinatorial explosion of tags
+    ## associated with a metric.
+    ##
+    ## The 'interval' key will indicate the validity time of the last list of projects obtained through the endpoint.
+    ## If 'interval' is not indicated, the list of projects will be obtained each time the check is executed
+    ## and will not be cached.
+    ##
+    ## In the following example, all projects will be processed except those whose name begins with 'tmp_'
+    ## up to a maximum of 10 projects.
+    ## Furthermore, the cache will be valid for 1 minute.
+    ##
+    ##   projects:
+    ##     limit: 10
+    ##     include:
+    ##       - '.*'
+    ##     exclude:
+    ##       - 'tmp_.*'
+    ##     interval: 60
+    #
+    # projects:
+    #   include:
+    #   - .*
+    #   exclude:
+    #   - tmp_.*
+
+    ## @param tags - list of strings - optional
+    ## A list of tags to attach to every metric and service check emitted by this instance.
+    ##
+    ## Learn more about tagging at https://docs.datadoghq.com/tagging
+    #
+    # tags:
+    #   - <KEY_1>:<VALUE_1>
+    #   - <KEY_2>:<VALUE_2>
+
+    ## @param min_collection_interval - number - optional - default: 15
+    ## This changes the collection interval of the check. For more information, see:
+    ## https://docs.datadoghq.com/developers/write_agent_check/#collection-interval
+    #
+    # min_collection_interval: 15
+
+    ## @param metric_patterns - mapping - optional
+    ## A mapping of metrics to include or exclude, with each entry being a regular expression.
+    ##
+    ## Metrics defined in `exclude` will take precedence in case of overlap.
+    #
+    # metric_patterns:
+    #   include:
+    #   - <INCLUDE_REGEX>
+    #   exclude:
+    #   - <EXCLUDE_REGEX>
+
+    ## @param proxy - mapping - optional
+    ## This overrides the `proxy` setting in `init_config`.
+    ##
+    ## Set HTTP or HTTPS proxies for this instance. Use the `no_proxy` list
+    ## to specify hosts that must bypass proxies.
+    ##
+    ## The SOCKS protocol is also supported, for example:
+    ##
+    ##   socks5://user:pass@host:port
+    ##
+    ## Using the scheme `socks5` causes the DNS resolution to happen on the
+    ## client, rather than on the proxy server. This is in line with `curl`,
+    ## which uses the scheme to decide whether to do the DNS resolution on
+    ## the client or proxy. If you want to resolve the domains on the proxy
+    ## server, use `socks5h` as the scheme.
+    #
+    # proxy:
+    #   http: http://<PROXY_SERVER_FOR_HTTP>:<PORT>
+    #   https: https://<PROXY_SERVER_FOR_HTTPS>:<PORT>
+    #   no_proxy:
+    #   - <HOSTNAME_1>
+    #   - <HOSTNAME_2>
+
+    ## @param skip_proxy - boolean - optional - default: false
+    ## This overrides the `skip_proxy` setting in `init_config`.
+    ##
+    ## If set to `true`, this makes the check bypass any proxy
+    ## settings enabled and attempt to reach services directly.
+    #
+    # skip_proxy: false
+
+    ## @param ntlm_domain - string - optional
+    ## If your services use NTLM authentication, specify
+    ## the domain used in the check. For NTLM Auth, append
+    ## the username to domain, not as the `username` parameter.
+    #
+    # ntlm_domain: <NTLM_DOMAIN>\<USERNAME>
+
+    ## @param kerberos_auth - string - optional - default: disabled
+    ## If your services use Kerberos authentication, you can specify the Kerberos
+    ## strategy to use between:
+    ##
+    ##   - required
+    ##   - optional
+    ##   - disabled
+    ##
+    ## See https://github.com/requests/requests-kerberos#mutual-authentication
+    #
+    # kerberos_auth: disabled
+
+    ## @param kerberos_cache - string - optional
+    ## Sets the KRB5CCNAME environment variable.
+    ## It should point to a credential cache with a valid TGT.
+    #
+    # kerberos_cache: <KERBEROS_CACHE>
+
+    ## @param kerberos_delegate - boolean - optional - default: false
+    ## Set to `true` to enable Kerberos delegation of credentials to a server that requests delegation.
+    ##
+    ## See https://github.com/requests/requests-kerberos#delegation
+    #
+    # kerberos_delegate: false
+
+    ## @param kerberos_force_initiate - boolean - optional - default: false
+    ## Set to `true` to preemptively initiate the Kerberos GSS exchange and
+    ## present a Kerberos ticket on the initial request (and all subsequent).
+    ##
+    ## See https://github.com/requests/requests-kerberos#preemptive-authentication
+    #
+    # kerberos_force_initiate: false
+
+    ## @param kerberos_hostname - string - optional
+    ## Override the hostname used for the Kerberos GSS exchange if its DNS name doesn't
+    ## match its Kerberos hostname, for example: behind a content switch or load balancer.
+    ##
+    ## See https://github.com/requests/requests-kerberos#hostname-override
+    #
+    # kerberos_hostname: <KERBEROS_HOSTNAME>
+
+    ## @param kerberos_principal - string - optional
+    ## Set an explicit principal, to force Kerberos to look for a
+    ## matching credential cache for the named user.
+    ##
+    ## See https://github.com/requests/requests-kerberos#explicit-principal
+    #
+    # kerberos_principal: <KERBEROS_PRINCIPAL>
+
+    ## @param kerberos_keytab - string - optional
+    ## Set the path to your Kerberos key tab file.
+    #
+    # kerberos_keytab: <KEYTAB_FILE_PATH>
+
+    ## @param tls_verify - boolean - optional - default: true
+    ## Instructs the check to validate the TLS certificate of services.
+    #
+    # tls_verify: true
+
+    ## @param tls_ignore_warning - boolean - optional - default: false
+    ## If `tls_verify` is disabled, security warnings are logged by the check.
+    ## Disable those by setting `tls_ignore_warning` to true.
+    #
+    # tls_ignore_warning: false
+
+    ## @param tls_cert - string - optional
+    ## The path to a single file in PEM format containing a certificate as well as any
+    ## number of CA certificates needed to establish the certificate's authenticity for
+    ## use when connecting to services. It may also contain an unencrypted private key to use.
+    #
+    # tls_cert: <CERT_PATH>
+
+    ## @param tls_private_key - string - optional
+    ## The unencrypted private key to use for `tls_cert` when connecting to services. This is
+    ## required if `tls_cert` is set and it does not already contain a private key.
+    #
+    # tls_private_key: <PRIVATE_KEY_PATH>
+
+    ## @param tls_ca_cert - string - optional
+    ## The path to a file of concatenated CA certificates in PEM format or a directory
+    ## containing several CA certificates in PEM format. If a directory, the directory
+    ## must have been processed using the c_rehash utility supplied with OpenSSL. See:
+    ## https://www.openssl.org/docs/manmaster/man3/SSL_CTX_load_verify_locations.html
+    #
+    # tls_ca_cert: <CA_CERT_PATH>
+
+    ## @param tls_protocols_allowed - list of strings - optional
+    ## The expected versions of TLS/SSL when fetching intermediate certificates.
+    ## Only `SSLv3`, `TLSv1.2`, `TLSv1.3` are allowed by default. The possible values are:
+    ##   SSLv3
+    ##   TLSv1
+    ##   TLSv1.1
+    ##   TLSv1.2
+    ##   TLSv1.3
+    #
+    # tls_protocols_allowed:
+    #   - SSLv3
+    #   - TLSv1.2
+    #   - TLSv1.3
+
+    ## @param headers - mapping - optional
+    ## The headers parameter allows you to send specific headers with every request.
+    ## You can use it for explicitly specifying the host header or adding headers for
+    ## authorization purposes.
+    ##
+    ## This overrides any default headers.
+    #
+    # headers:
+    #   Host: <ALTERNATIVE_HOSTNAME>
+    #   X-Auth-Token: <AUTH_TOKEN>
+
+    ## @param timeout - number - optional - default: 10
+    ## The timeout for accessing services.
+    ##
+    ## This overrides the `timeout` setting in `init_config`.
+    #
+    # timeout: 10
+
+    ## @param connect_timeout - number - optional
+    ## The connect timeout for accessing services. Defaults to `timeout`.
+    #
+    # connect_timeout: <CONNECT_TIMEOUT>
+
+    ## @param read_timeout - number - optional
+    ## The read timeout for accessing services. Defaults to `timeout`.
+    #
+    # read_timeout: <READ_TIMEOUT>
+
+    ## @param request_size - number - optional - default: 16
+    ## The number of kibibytes (KiB) to read from streaming HTTP responses at a time.
+    #
+    # request_size: 16
+
+    ## @param log_requests - boolean - optional - default: false
+    ## Whether or not to debug log the HTTP(S) requests made, including the method and URL.
+    #
+    # log_requests: false
+
+    ## @param persist_connections - boolean - optional - default: false
+    ## Whether or not to persist cookies and use connection pooling for improved performance.
+    #
+    # persist_connections: false
+
+    ## @param allow_redirects - boolean - optional - default: true
+    ## Whether or not to allow URL redirection.
+    #
+    # allow_redirects: true
+
+## Log Section
+##
+## type - required - Type of log input source (tcp / udp / file / windows_event).
+## port / path / channel_path - required - Set port if type is tcp or udp.
+##                                         Set path if type is file.
+##                                         Set channel_path if type is windows_event.
+## source  - required - Attribute that defines which integration sent the logs.
+## encoding - optional - For file specifies the file encoding. Default is utf-8. Other
+##                       possible values are utf-16-le and utf-16-be.
+## service - optional - The name of the service that generates the log.
+##                      Overrides any `service` defined in the `init_config` section.
+## tags - optional - Add tags to the collected logs.
+##
+## Discover Datadog log collection: https://docs.datadoghq.com/logs/log_collection/
+#
+# logs:
+#   - type: file
+#     path: /var/log/apache2/*.log
+#     source: openstack
+#   - type: file
+#     path: /var/log/libvirt/*.log
+#     source: openstack

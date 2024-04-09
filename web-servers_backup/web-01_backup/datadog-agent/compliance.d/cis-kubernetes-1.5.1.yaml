@@ -1,0 +1,1206 @@
+schema:
+  version: 1.0.0
+name: CIS Kubernetes
+framework: cis-kubernetes
+version: 1.5.1
+rules:
+  - id: cis-kubernetes-1.5.1-1.1.1
+    description: API server pod specification file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/kube-apiserver.yaml
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.2
+    description: Only the root account and group have ownership of the API server pod specification file
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/kube-apiserver.yaml
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.3
+    description: Controller manager pod specification file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.4
+    description: Controller manager pod specification file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.5
+    description: Scheduler pod specification file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/kube-scheduler.yaml
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.6
+    description: Scheduler pod specification file ownership is assigned to root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/kube-scheduler.yaml
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.7
+    description: Etcd pod specification file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/etcd.yaml
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.8
+    description: Etcd pod specification file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/manifests/etcd.yaml
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.11
+    description: Etcd data directory permissions can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("etcd", "--data-dir")
+      - constants:
+          max_permissions: '700'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.12
+    description: Etcd data directory is owned by the etcd user and group
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("etcd", "--data-dir")
+      - constants:
+          user: etcd
+          group: etcd
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.13
+    description: Only the root account has write permissions to the admin.conf file
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/admin.conf
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.14
+    description: Only the root account and group have ownership of the admin.conf file
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/admin.conf
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.15
+    description: Scheduler configuration file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/scheduler.conf
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.16
+    description: Scheduler configuration file ownership is assigned to root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/scheduler.conf
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.17
+    description: controller-manager.conf file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/controller-manager.conf
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.18
+    description: The controller-manager.conf file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/controller-manager.conf
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.19
+    description: Kubernetes PKI directory is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/pki/
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.1.20
+    description: Kubernetes PKI certificate file can only be altered by owners
+    scope:
+      - kubernetesNode
+    input:
+      - tag: files
+        file:
+          path: /etc/kubernetes/pki/*.crt
+        type: array
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_master_node
+    imports:
+      - cis-docker-1.2.0-3.8.rego
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-1.2.2
+    description: Basic authentication is disabled for the API server
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.3
+    description: API server uses secure authentication methods
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.4
+    description: Kubelet connections use HTTPS
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.5
+    description: Certificate-based kubelet authentication is required
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.6
+    description: API server verifies the kubelet's certificate before establishing connection
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.7
+    description: API server only allows explicitly authorized requests
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.8
+    description: Kubelet nodes are only authorized to read objects they are associated with
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.9
+    description: RBAC is enabled for the API server
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.11
+    description: Admission controller AlwaysAdmin is disabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.14
+    description: Admission controller ServiceAccount is enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.15
+    description: Admission controller NamespaceLifecycle is enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.16
+    description: Admission controller PodSecurityPolicy is enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.17
+    description: Admission controller NodeRestriction is enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.18
+    description: API server only binds to secure API service addresses
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.19
+    description: API server only binds the API service to secure, known ports
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.20
+    description: API server secure port is enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.21
+    description: API server profiling is disabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.22
+    description: API server audit logs are enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.23
+    description: API server audit logs are retained for at least 30 days
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.24
+    description: API server audit log files are retained for at least 10 log file rotations
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.25
+    description: API server audit log files are rotated once the file reaches 100 MB or more
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.26
+    description: API server request timeout exceeds 60 seconds only if required
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.27
+    description: API server validates the service account token exists in etcd
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.28
+    description: API server uses a service account public key file for service accounts
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.29
+    description: etcd server requires API servers present a client certificate and key when connecting
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.30
+    description: API Server requires HTTPS connections
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.31
+    description: API server uses TLS certificate client authentication
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.32
+    description: etcd server requires API servers present an SSL CA file when connecting
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.2.33
+    description: etcd is encrypted at rest
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.3.2
+    description: Controller Manager profiling is disabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-controller-manager
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.3.3
+    description: Each controller uses individual service account credentials
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-controller-manager
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.3.4
+    description: Controller manager has a service account private key file set
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-controller-manager
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.3.5
+    description: Pods utilize `root-ca-file` to pass serving certificates to the API server
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-controller-manager
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.3.6
+    description: Enable kubelet server certificate rotation on controller-manager
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-controller-manager
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.3.7
+    description: Controller Manager API service is bound to localhost
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-controller-manager
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.4.1
+    description: Scheduler profiling is disabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-scheduler
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-1.4.2
+    description: Scheduler API service is bound to localhost
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-scheduler
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-2.1
+    description: etcd is configured with TLS encryption
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: etcd
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-2.2
+    description: Client authentication is enabled for etcd
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: etcd
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-2.3
+    description: etcd only allows the use of valid client certificates
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: etcd
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-2.4
+    description: etcd uses TLS encryption for peer connections
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: etcd
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-2.5
+    description: etcd is configured for peer authentication
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: etcd
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-2.6
+    description: Prevent use of self-signed certificates for TLS connections between etcd peers
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: etcd
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-3.2.1
+    description: A minimal audit policy exists
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kube-apiserver
+      - constants:
+          resource_type: kubernetes_master_node
+  - id: cis-kubernetes-1.5.1-4.1.1
+    description: Kubelet service can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /usr/lib/systemd/system/kubelet.service
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.2
+    description: Kubelet service file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /usr/lib/systemd/system/kubelet.service
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.3
+    description: Kube-proxy configuration file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /var/lib/kube-proxy/kubeconfig
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.4
+    description: Kube-proxy configuration file ownership is assigned to root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /var/lib/kube-proxy/kubeconfig
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.5
+    description: The kubelet.conf file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/kubelet.conf
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.6
+    description: The kubelet.conf file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/kubernetes/kubelet.conf
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.7
+    description: Certificate authorities file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("kubelet", "--client-ca-file")
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.8
+    description: Client certificate authorities file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("kubelet", "--client-ca-file")
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.9
+    description: The kubelet configuration file can only be altered by owners
+    scope:
+      - kubernetesNode
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("kubelet", "--config")
+      - constants:
+          max_permissions: '644'
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.1.10
+    description: Kubelet configuration file is owned by root
+    scope:
+      - kubernetesNode
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("kubelet", "--config")
+      - constants:
+          user: root
+          group: root
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.2.1
+    description: API server anonymous-auth argument is set to false
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kubelet
+      - constants:
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.2.2
+    description: Kubelet only allows explicitly authorized requests
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kubelet
+      - constants:
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.2.3
+    description: Kubelet uses TLS certificate client authentication
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kubelet
+      - constants:
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-4.2.4
+    description: Kubelet read-only port is disabled
+    scope:
+      - kubernetesNode
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+          parser: yaml
+      - constants:
+          resource_type: kubernetes_worker_node
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-4.2.5
+    description: Timeouts on streaming connections are enabled
+    scope:
+      - kubernetesNode
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+          parser: yaml
+      - constants:
+          resource_type: kubernetes_worker_node
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-4.2.6
+    description: Default Kubelet kernel parameter values are protected
+    scope:
+      - kubernetesNode
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+          parser: yaml
+      - constants:
+          resource_type: kubernetes_worker_node
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-4.2.7
+    description: Allow Kubelets to manage changes to the iptables
+    scope:
+      - kubernetesNode
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+          parser: yaml
+      - constants:
+          resource_type: kubernetes_worker_node
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-4.2.10
+    description: Kubelet requires HTTPS connections
+    scope:
+      - kubernetesNode
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+          parser: yaml
+      - constants:
+          resource_type: kubernetes_worker_node
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-4.2.11
+    description: Kubelet client certificate rotation is enabled
+    scope:
+      - kubernetesNode
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+          parser: yaml
+      - constants:
+          resource_type: kubernetes_worker_node
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-4.2.12
+    description: Kubelet server certificate rotation is enabled
+    scope:
+      - kubernetesNode
+    imports:
+      - process-common-rule.rego
+      - helpers.rego
+    input:
+      - process:
+          name: kubelet
+      - constants:
+          resource_type: kubernetes_worker_node
+  - id: cis-kubernetes-1.5.1-5.1.5
+    description: Only non-default service accounts are in use
+    scope:
+      - kubernetesCluster
+    input:
+      - kubeApiserver:
+          kind: serviceaccounts
+          version: v1
+          fieldSelector: metadata.name=default
+          apiRequest:
+            verb: list
+        type: array
+        tag: serviceaccounts
+      - kubeApiserver:
+          kind: clusterrolebindings
+          version: v1
+          group: rbac.authorization.k8s.io
+          apiRequest:
+            verb: list
+        type: array
+        tag: clusterrolebindings
+      - kubeApiserver:
+          kind: rolebindings
+          version: v1
+          group: rbac.authorization.k8s.io
+          apiRequest:
+            verb: list
+        type: array
+        tag: rolebindings
+      - constants:
+          resource_type: kubernetes_cluster
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-5.2.2
+    description: Limit admission of containers sharing the host PID namespace
+    scope:
+      - kubernetesCluster
+    input:
+      - tag: policies
+        type: array
+        kubeApiserver:
+          kind: podsecuritypolicies
+          version: v1beta1
+          group: policy
+          apiRequest:
+            verb: list
+      - constants:
+          resource_type: kubernetes_cluster
+          spec: hostPID
+    imports:
+      - psp-rule-common.rego
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-5.2.3
+    description: Limit admission of containers sharing the host IPC namespace
+    scope:
+      - kubernetesCluster
+    input:
+      - tag: policies
+        type: array
+        kubeApiserver:
+          kind: podsecuritypolicies
+          version: v1beta1
+          group: policy
+          apiRequest:
+            verb: list
+      - constants:
+          resource_type: kubernetes_cluster
+          spec: hostIPC
+    imports:
+      - psp-rule-common.rego
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-5.2.4
+    description: Minimize the admission of containers wishing to share the host network namespace
+    scope:
+      - kubernetesCluster
+    input:
+      - tag: policies
+        type: array
+        kubeApiserver:
+          kind: podsecuritypolicies
+          version: v1beta1
+          group: policy
+          apiRequest:
+            verb: list
+      - constants:
+          resource_type: kubernetes_cluster
+          spec: hostNetwork
+    imports:
+      - psp-rule-common.rego
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-5.2.5
+    description: Containers are configured to block privilege escalation
+    scope:
+      - kubernetesCluster
+    input:
+      - tag: policies
+        type: array
+        kubeApiserver:
+          kind: podsecuritypolicies
+          version: v1beta1
+          group: policy
+          apiRequest:
+            verb: list
+      - constants:
+          resource_type: kubernetes_cluster
+          spec: allowPrivilegeEscalation
+    imports:
+      - psp-rule-common.rego
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-5.3.2
+    description: All namespaces have network policies defined
+    scope:
+      - kubernetesCluster
+    input:
+      - kubeApiserver:
+          kind: namespaces
+          version: v1
+          apiRequest:
+            verb: list
+        type: array
+        tag: namespaces
+      - kubeApiserver:
+          kind: networkpolicies
+          version: v1
+          group: networking.k8s.io
+          apiRequest:
+            verb: list
+        type: array
+        tag: networkpolicies
+      - constants:
+          resource_type: kubernetes_cluster
+    imports:
+      - helpers.rego
+  - id: cis-kubernetes-1.5.1-5.7.4
+    description: Resources are created in a non-default namespace
+    scope:
+      - kubernetesCluster
+    input:
+      - tag: pods
+        type: array
+        kubeApiserver:
+          kind: pods
+          version: v1beta1
+          group: policy
+          namespace: default
+          apiRequest:
+            verb: list
+      - tag: services
+        type: array
+        kubeApiserver:
+          kind: services
+          version: v1
+          namespace: default
+          fieldSelector: metadata.name!=kubernetes,metadata.name!=openshift
+          apiRequest:
+            verb: list
+      - constants:
+          resource_type: kubernetes_cluster
+    imports:
+      - helpers.rego

@@ -1,0 +1,897 @@
+schema:
+  version: 1.0.0
+name: CIS Docker Generic
+framework: cis-docker
+version: 1.2.0
+rules:
+  - id: cis-docker-1.2.0-1.2.1
+    description: Docker local storage is mounted on a separate disk partition
+    scope:
+      - docker
+    input:
+      - file:
+          path: /proc/mounts
+          parser: raw
+      - constants:
+          regexp: '[a-zA-Z0-9-_/]+ /var/lib/docker [a-zA-Z0-9-_/]+'
+          resource_type: docker_daemon
+    imports:
+      - file-matches-regexp.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.2
+    description: Only the root account and Docker group members can control the Docker daemon
+    scope:
+      - docker
+    input:
+      - group:
+          name: docker
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.3
+    description: Auditing for Docker Daemon executable is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /usr/bin/dockerd
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.4
+    description: Auditing for Docker local storage is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /var/lib/docker
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.5
+    description: Auditing is configured for Docker-related files
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /etc/docker
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.6
+    description: Auditing for the docker.service file is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /usr/lib/systemd/system/docker.service
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.7
+    description: Auditing for the docker.socket file is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /usr/lib/systemd/system/docker.socket
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.8
+    description: Auditing for the default Docker configuration file is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /etc/default/docker
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.9
+    description: Auditing for the default Docker configuration file is configured - RHEL
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /etc/sysconfig/docker
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.10
+    description: Auditing for the Docker daemon configuration file is configured
+    scope:
+      - docker
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+    input:
+      - audit:
+          path: /etc/docker/daemon.json
+        type: array
+      - constants:
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-1.2.11
+    description: Auditing for the containerd executable is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /usr/bin/containerd
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-1.2.12
+    description: Auditing for the runc executable is configured
+    scope:
+      - docker
+    input:
+      - audit:
+          path: /usr/sbin/runc
+        type: array
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - audit-rule-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-2.1
+    description: Network traffic is restricted between containers on the default network bridge
+    scope:
+      - docker
+    input:
+      - tag: networks
+        docker:
+          kind: network
+        type: array
+      - constants:
+          resource_type: docker_network
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-2.2
+    description: Docker daemon logging level is set to 'info'
+    scope:
+      - docker
+    input:
+      - file:
+          path: /etc/docker/daemon.json
+          parser: json
+      - process:
+          name: dockerd
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-2.3
+    description: Docker is authorized to make firewall configuration changes
+    scope:
+      - docker
+    skipOnKubernetes: true
+    input:
+      - file:
+          path: /etc/docker/daemon.json
+          parser: json
+      - process:
+          name: dockerd
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-2.4
+    description: Private registry uses TLS encryption
+    scope:
+      - docker
+    imports:
+      - docker-info-rule-common.rego
+      - helpers.rego
+    input:
+      - tag: infos
+        docker:
+          kind: info
+        type: array
+      - constants:
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-2.5
+    description: Docker uses a storage driver other than AUFS
+    scope:
+      - docker
+    imports:
+      - docker-info-rule-common.rego
+      - helpers.rego
+    input:
+      - tag: infos
+        docker:
+          kind: info
+        type: array
+      - constants:
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-2.6
+    description: TLS authentication is configured for Docker daemon
+    scope:
+      - docker
+    skipOnKubernetes: true
+    input:
+      - process:
+          name: kubelet
+      - file:
+          path: process.flag("kubelet", "--config")
+      - tag: config
+        file:
+          path: /etc/docker/daemon.json
+        parser: yaml
+      - constants:
+          resource_type: docker_daemon
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-3.1
+    description: Only the root account and group have ownership of the docker.service file
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /usr/lib/systemd/system/docker.service
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.2
+    description: Only the root account has write permissions to the docker.service file
+    scope:
+      - docker
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /usr/lib/systemd/system/docker.service
+      - constants:
+          max_permissions: '644'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.3
+    description: Only the root account and group have ownership over the docker.socket file
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /usr/lib/systemd/system/docker.socket
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.4
+    description: Only the root account has write permissions to the docker.socket file
+    scope:
+      - docker
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /usr/lib/systemd/system/docker.socket
+      - constants:
+          max_permissions: '644'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.5
+    description: Docker related files are owned by the root account and group
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/docker
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.6
+    description: Docker related files can only be altered by owners
+    scope:
+      - docker
+    input:
+      - file:
+          path: /etc/docker
+      - constants:
+          max_permissions: '755'
+          resource_type: docker_daemon
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+  - id: cis-docker-1.2.0-3.7
+    description: Only the root account and group have ownership over the registry certificate file
+    scope:
+      - docker
+    input:
+      - file:
+          path: /etc/docker/certs.d/*.crt
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-3.8
+    description: Registry certificate file permissions are set to read-only or more restrictive
+    scope:
+      - docker
+    input:
+      - file:
+          path: /etc/docker/certs.d/*.crt
+        type: array
+        tag: files
+      - constants:
+          max_permissions: '444'
+          resource_type: docker_daemon
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-3.9
+    description: Only the root account and group have ownership of the TLS CA certificate file
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("dockerd", "--tlscacert")
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.10
+    description: TLS CA certificate file permissions are set to read-only or more restrictive
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("dockerd", "--tlscacert")
+      - constants:
+          max_permissions: '444'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.11
+    description: Only the root account and group have ownership of the Docker server certificate file
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("dockerd", "--tlscert")
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.12
+    description: Docker server certificate file permissions are set to read-only or more restrictive
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("dockerd", "--tlscert")
+      - constants:
+          max_permissions: '444'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.13
+    description: Only the root account and group have ownership of the Docker server certificate key file
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("dockerd", "--tlskey")
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.14
+    description: Only the owner of the server certificate key file can read its contents
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: process.flag("dockerd", "--tlskey")
+      - constants:
+          max_permissions: '400'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.15
+    description: Only the root account and Docker group members have ownership of the Docker socket file
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /var/run/docker.sock
+      - constants:
+          user: root
+          group: docker
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.16
+    description: Only the root account and Docker group members can read and write to the Docker socket file
+    scope:
+      - docker
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /var/run/docker.sock
+      - constants:
+          max_permissions: '660'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.17
+    description: Only the root account and group have ownership of the daemon.json file
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/docker/daemon.json
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.18
+    description: Only the root account has write permissions to the daemon.json file
+    scope:
+      - docker
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/docker/daemon.json
+      - constants:
+          max_permissions: '644'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.19
+    description: Default Docker configuration file is owned by the root account and group
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/default/docker
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.20
+    description: Default Docker configuration file is owned by the root account and group - RHEL
+    scope:
+      - docker
+    imports:
+      - file-owner-rule-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/sysconfig/docker
+      - constants:
+          user: root
+          group: root
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.21
+    description: Default Docker configuration file can only be altered by owners - RHEL
+    scope:
+      - docker
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/sysconfig/docker
+      - constants:
+          max_permissions: '644'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-3.22
+    description: Default Docker configuration file can only be altered by owners
+    scope:
+      - docker
+    imports:
+      - file-permissions-common.rego
+      - helpers.rego
+    input:
+      - file:
+          path: /etc/default/docker
+      - constants:
+          max_permissions: '644'
+          resource_type: docker_daemon
+  - id: cis-docker-1.2.0-4.1
+    description: Containers run using non-root user accounts
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-4.6
+    description: Container image includes HealthCheck instructions
+    scope:
+      - docker
+    skipOnKubernetes: true
+    input:
+      - tag: images
+        docker:
+          kind: image
+        type: array
+      - constants:
+          resource_type: docker_image
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-5.1
+    description: Containers have an AppArmor profile enabled
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.2
+    description: SELinux security options are configured
+    scope:
+      - docker
+    skipOnKubernetes: true
+    input:
+      - file:
+          path: /sys/fs/selinux/enforce
+          parser: raw
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+    imports:
+      - helpers.rego
+  - id: cis-docker-1.2.0-5.3
+    description: Linux kernel capabilities are restricted to only those which are required
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.4
+    description: Containers only run in non-privileged mode
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.5
+    description: Sensitive host system directories are not mounted on containers
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.7
+    description: Mapping of privileged ports within containers is restricted
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.9
+    description: Host's network namespace is hidden from containers
+    scope:
+      - docker
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.10
+    description: Container has memory usage limits configured
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.11
+    description: CPU priorities are set to ensure critical containers remain responsive
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.12
+    description: Container root file system is set to read-only
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.14
+    description: Restart attempts on container failure is limited to 5 attempts
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.15
+    description: Host's process namespace is isolated from containers
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.16
+    description: Host's IPC namespace is isolated from containers
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.20
+    description: UTS Namespace is only allocated to the Host
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.21
+    description: Seccomp profiles are enabled for filtering incoming system calls
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.24
+    description: Containers use the cgroup configured in Docker
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.25
+    description: Container is restricted from acquiring additional privileges
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.26
+    description: Container health is always monitored
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.28
+    description: Container's PIDs cgroup limit parameter is set
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.30
+    description: User namespaces isolated between host and containers
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
+  - id: cis-docker-1.2.0-5.31
+    description: Containers prohibit Docker socket mounting
+    scope:
+      - docker
+    skipOnKubernetes: true
+    imports:
+      - container-generic-rule.rego
+      - helpers.rego
+    input:
+      - tag: containers
+        docker:
+          kind: container
+        type: array
+      - constants:
+          resource_type: docker_container
